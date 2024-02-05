@@ -1,0 +1,213 @@
+
+  <h1 class="fw-bold mx-1 md-4 mt-4">Welcome Staff!!</h1>
+
+  <div class="d-flex">
+  <section class="vh-100 pt-2 col-6">
+  <div class="bg-image h-100">
+    <div class="mask d-flex h-100">
+      <div class="container">
+        <h3 class="fw-bold mx-1 md-4">PENDING MAINTENANCE</h3>
+        <!-- Card-1 -->
+        <div>
+        
+          <div class="d-flex justify-content-center" *ngIf="maintenance.length === 0">
+            <ng-lottie [options]="empty" height="90vh" width="90vh"></ng-lottie>
+          </div>
+
+          <div clas="col-8" *ngIf="maintenance.length > 0">
+            <table class="table align-middle mb-0 pt-2">
+              <thead class="table-header-custom">
+                <tr>
+                  <th>MAINTENANCE DATE</th>
+                  <th>CAR MODEL</th>
+                  <th>MAINTENANCE STATUS</th>
+                </tr>
+              </thead>
+              <tbody class="table-body-custom">
+                <tr *ngFor="let m of maintenance.slice(
+                  (currentPage - 1) * itemsPerPage,
+                  currentPage * itemsPerPage
+                )">
+                  <td>{{ m.maintenanceDate }}</td>
+                  <td>{{ m.carName }}</td>
+                  <td>
+                    <select
+                      class="form-select"
+                      [(ngModel)]="m.maintenanceStatus"
+                      (change)="onStatusChange(m)"
+                    >
+                      <option
+                        [value]="'1'"
+                        [selected]="m.maintenanceStatus === '1'"
+                      >
+                        Pending
+                      </option>
+                      <option
+                        [value]="'2'"
+                        [selected]="m.maintenanceStatus === '2'"
+                      >
+                        Maintenance Done
+                      </option>
+                    </select>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div clas="col-4"></div>
+        </div>
+        <!-- Card-1 -->
+          <!-- Pagination controls -->
+  <ul class="pagination justify-content-center mt-3">
+    <li class="page-item" [class.disabled]="currentPage === 1">
+      <a
+        class="page-link"
+        (click)="currentPage = currentPage - 1"
+        aria-label="Previous"
+      >
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    <li
+      class="page-item text-danger"
+      *ngFor="let page of getPageNumbers()"
+      [class.active]="currentPage === page"
+    >
+      <a class="page-link" (click)="currentPage = page">{{ page }}</a>
+    </li>
+    <li class="page-item" [class.disabled]="currentPage === getLastPage()">
+      <a
+        class="page-link"
+        (click)="currentPage = currentPage + 1"
+        aria-label="Next"
+      >
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+      </div>
+    </div>
+  </div>
+
+</section>
+<section class="col-6">
+ 
+  <div class="bg-image h-100">
+    <div class="mask d-flex h-100">
+      <div class="container">
+        <h3 class="fw-bold mx-1 md-4 pb-2">UPCOMMING RESERVATION</h3>
+        <!-- Card-1 -->
+        <div>
+          <div class="d-flex justify-content-center" *ngIf="reservation.length === 0">
+            <ng-lottie [options]="empty" height="90vh" width="90vh"></ng-lottie>
+          </div>
+
+          <div clas="col-8" *ngIf="reservation.length > 0">
+            <table class="table align-middle mb-0 pt-2">
+              <thead class="table-header-custom">
+                <tr>
+                  <th>MODEL</th>
+                  <th>START DATE</th>
+                  <th>END DATE</th>
+                  <th>TOTAL PRICE</th>
+                  <th>CANCEL</th>
+
+                </tr>
+              </thead>
+              <tbody class="table-body-custom">
+                <tr *ngFor="let r of reservation.slice(
+                  (currentPage - 1) * itemsPerPage,
+                  currentPage * itemsPerPage
+                )">
+                  <td>{{ r.model_name }}</td>
+                  <td>{{ r.start_date }}</td>
+                  <td>{{ r.end_date }}</td>
+                  <td>{{ r.total_price }}</td>
+                  <td>    <button
+                    type="button"
+                    class="btn btn-danger btn-sm px-3"
+                    data-bs-toggle="modal"
+                    [attr.data-bs-target]="'#deleteModal' + r.id"
+                  >
+                    <i class="fas fa-times"></i>
+                  </button></td>
+                        <!-- Delete Confirmation Modal -->
+                        <div
+                        class="modal fade"
+                        [id]="'deleteModal' + r.id"
+                        tabindex="-1"
+                        aria-labelledby="deleteModalLabel"
+                        aria-hidden="true"
+                      >
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLabel">
+                                Delete Confirmation
+                              </h5>
+                            </div>
+                            <div class="modal-body">
+                              Are you sure, you want to cancel the reservation?
+                            </div>
+                            <div class="modal-footer">
+                              <button
+                                type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal"
+                              >
+                                NO
+                              </button>
+                              <button
+                                type="button"
+                                class="btn btn-primary"
+                                data-bs-dismiss="modal"
+                                (click)="cancelReservation(r)"
+                              >
+                                YES
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                </tr>
+                
+              </tbody>
+            </table>
+          </div>
+          <div clas="col-4"></div>
+        </div>
+        <!-- Card-1 -->
+          <!-- Pagination controls -->
+  <ul class="pagination justify-content-center mt-3">
+    <li class="page-item" [class.disabled]="currentPage === 1">
+      <a
+        class="page-link"
+        (click)="currentPage = currentPage - 1"
+        aria-label="Previous"
+      >
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    <li
+      class="page-item text-danger"
+      *ngFor="let page of getPageNumbersReservation()"
+      [class.active]="currentPage === page"
+    >
+      <a class="page-link" (click)="currentPage = page">{{ page }}</a>
+    </li>
+    <li class="page-item" [class.disabled]="currentPage === getLastPageReservation()">
+      <a
+        class="page-link"
+        (click)="currentPage = currentPage + 1"
+        aria-label="Next"
+      >
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+      </div>
+    </div>
+  </div>
+
+</section>
+</div>

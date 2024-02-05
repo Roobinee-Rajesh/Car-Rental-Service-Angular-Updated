@@ -1,0 +1,165 @@
+<!-- Non-Logged-In Navebar -->
+<div *ngIf="!isLoggedIn" class="container-fluid vh-100 d-flex flex-column">
+  <div class="row" *ngIf="currentRouteIsHome()">
+    <!-- Not logged in Navigation Bar -->
+    <header
+      *ngIf="!(isLoggedIn && isStaff)"
+      class="navbar sticky-top bg-primary p-2 shadow"
+    >
+      <div class="col-10">
+        <a class="navbar px-3" routerLink="/staff">
+          <img src="../../../assets/ecogo.png" class="logo" />
+        </a>
+      </div>
+
+      <div
+        class="navbar-nav px-4 text-white d-flex flex-column"
+        [routerLink]="'/login'"
+        role="button"
+      >
+        <div>
+          <b>Sign In</b>&nbsp;<i class="fa-solid fa-right-to-bracket"></i>
+        </div>
+      </div>
+    </header>
+  </div>
+  <div class="row flex-grow-1">
+    <main class="col-12 px-4">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
+
+<!-- Logged-In nav-bar -->
+<div *ngIf="isLoggedIn" class="vh-100 d-flex flex-column overflow-x-hidden">
+  <!-- Navigation Bar -->
+  <header class="navbar sticky-top bg-primary p-2 shadow">
+    <div class="d-flex justify-content-between align-items-center w-100">
+      <!-- Logo on the left -->
+      <a class="navbar mr-auto px-3 col-3" (click)="getLogoRouterLink()">
+        <img src="../../../assets/ecogo.png" class="logo" />
+      </a>
+      <!-- Menu items on the right -->
+      <div
+        class="d-flex justify-content-end align-items-center col-lg-5 col-md-7"
+      >
+        <!-- Admin -->
+
+        <div
+          class="d-flex justify-content-end align-items-center w-25"
+          *ngIf="isLoggedIn && isAdmin"
+          routerLink="/admin/cars"
+          style="cursor: pointer"
+        >
+          <i class="fa-solid fa-book" style="color: #ffffff"></i>&nbsp;
+          <p class="mb-0 text-white font-weight-bold">Car</p>
+        </div>
+
+        <div
+          class="d-flex justify-content-center align-items-center w-25"
+          *ngIf="isLoggedIn && isAdmin"
+          routerLink="/admin/staff"
+          style="cursor: pointer"
+        >
+          <i class="fa-solid fa-user" style="color: #ffffff"></i>&nbsp;
+          <p class="mb-0 text-white font-weight-bold">Staff</p>
+        </div>
+
+        <div
+          class="d-flex align-items-center w-25"
+          *ngIf="isLoggedIn && isAdmin"
+          routerLink="/admin/maintenance"
+          style="cursor: pointer"
+        >
+          <i class="fa-solid fa-clock-rotate-left" style="color: #ffffff"></i
+          >&nbsp;
+          <p class="mb-0 text-white font-weight-bold">Maintenance</p>
+        </div>
+
+        <!-- User -->
+
+        <div
+          class="d-flex align-items-center w-25"
+          *ngIf="isLoggedIn && !isStaff && !isAdmin"
+          routerLink="/user/profile"
+          style="cursor: pointer"
+        >
+          <i class="fa-solid fa-user" style="color: #ffffff"></i>&nbsp;
+          <p class="mb-0 text-white font-weight-bold">Profile</p>
+        </div>
+
+        <div
+          class="d-flex align-items-center w-25"
+          *ngIf="isLoggedIn && !isStaff && !isAdmin"
+          routerLink="/user/reservations"
+          style="cursor: pointer"
+        >
+          <i class="fa-solid fa-book" style="color: #ffffff"></i>&nbsp;
+          <p class="mb-0 text-white font-weight-bold">Booking</p>
+        </div>
+
+        <div
+          class="d-flex align-items-center w-25 me-3"
+          *ngIf="isLoggedIn && !isStaff && !isAdmin"
+          style="cursor: pointer"
+          (click)="updateViewedStatus()"
+        >
+          <div class="btn-group">
+            <i class="fa-solid fa-bell pt-1" style="color: #ffffff"></i>&nbsp;
+            <p
+              class="mb-0 text-white font-weight-bold dropdown-toggle dropdown-center"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Notification
+            </p>
+            <div class="position-relative" *ngIf="notification.length>0 && isNotificationViewed==false">
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {{notification.length}}
+              </span>
+            </div>
+            <ul class="dropdown-menu custom-dropdown">
+              <div *ngIf="notification.length>0">
+              <li *ngFor="let n of notification">
+                <a class="dropdown-item text-wrap custom-dropdown-item" href="#"
+                  >
+                  Your booking for the <b>{{ n.model }}</b> by <b>{{ n.manufacturer }}</b> has been canceled.
+                  Sorry for the inconvenience.
+                </a>
+                <hr>
+              </li>
+            </div>
+            <div *ngIf="notification.length==0">
+              <ng-lottie [options]="noNotification"></ng-lottie>
+            </div>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Logout icon at the end -->
+        <div
+          class="navbar-nav ml-3 text-white pt-1 pe-5"
+          (click)="logout()"
+          role="button"
+        >
+          <div>
+            <i class="fa-solid fa-right-from-bracket"></i>&nbsp;Sign Out
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <div class="row flex-grow-1">
+    <main class="col-12 px-4">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
+
+<!-- loader -->
+<div *ngIf="loaderService.isLoading | async"class="loader">
+  <ng-lottie [options]="options"></ng-lottie>
+</div>

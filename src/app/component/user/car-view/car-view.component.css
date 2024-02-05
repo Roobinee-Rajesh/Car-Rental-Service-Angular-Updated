@@ -1,0 +1,33 @@
+.head {
+  /* color: var(--primary-500); */
+  background-color: var(--primary-500) !important;
+  /* padding: 8px; */
+}
+
+.card-b {
+  background: var(--primary-100) !important;
+  border: none;
+}
+
+/* Background overlay */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+/* Content styling */
+.content {
+  position: relative;
+  z-index: 1001;
+  color: white;
+}
+
+.car-details {
+  text-align: left;
+  color: #333; /* Dark color, adjust as needed */
+}

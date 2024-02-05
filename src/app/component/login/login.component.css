@@ -1,0 +1,5 @@
+.body {
+  background-image: url('/src/assets/Logo.png');
+    background-size: contain; /* or cover, depending on your preference */
+    background-repeat: no-repeat;
+  }

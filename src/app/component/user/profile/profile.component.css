@@ -1,0 +1,15 @@
+/* Active state styles */
+.button-active {
+  background-color: var(--primary-800); /* Green */
+  color: white;
+  border-radius: 15px;
+}
+
+/* Inactive state styles */
+.button-inactive {
+  background-color: var(--primary-600); /* Green */
+  color: white;
+  border-radius: 15px;
+}
+
+

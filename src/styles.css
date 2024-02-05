@@ -1,0 +1,190 @@
+@import url("https://fonts.googleapis.com/css2?family=Rubik&family=Zilla+Slab&display=swap");
+@import 'ngx-toastr/toastr';
+
+
+:root {
+  --primary-50: #f7fee7; /* Lightest shade of green */
+  --primary-100: #ecfccb;
+  --primary-200: #d9f99d; /* Light shade of green */
+  --primary-300: #bef264;
+  --primary-400: #a3e635; /* Medium shade of green */
+  --primary-500: #84cc16; /* Primary green */
+  --primary-600: #65a30d; /* Darker shade of green */
+  --primary-700: #4d7c0f;
+  --primary-800: #3f6212; /* Even darker shade of green */
+  --primary-900: #1a2e05; /* Darkest shade of green */
+  --red-100: #fee2e2;
+  --red-300: #fca5a5;
+  --red-500: #ef4444;
+  --red-700: #b91c1c;
+  --border-radius: 4px;
+  --icon-shade: #ffffff;
+}
+
+body {
+  font-family: "Rubik", sans-serif;
+  font-family: "Zilla Slab", serif;
+  background-color: var(--primary-100);
+}
+
+/* background */
+.bg-primary {
+  background-color: var(--primary-600) !important;
+}
+
+/* Custom */
+.error {
+  background-color: var(--red-100);
+  margin: 8px 0px;
+  padding: 2px 6px;
+  display: block;
+  color: var(--red-700);
+  border-radius: var(--border-radius);
+  height: 30px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* Icon */
+/* .fa-solid {
+  color: var(--icon-shade);
+  font-size: large;
+} */
+
+.loader {
+  position: absolute;
+  min-height: 100vh;
+  min-width: 100vw;
+  opacity: 0.5;
+  background-color: #000;
+  z-index: 99;
+  left: 0;
+  top: 0;
+}
+
+.lottie-loader {
+  width: 150px !important;
+  height: 150px !important;
+  position: absolute;
+  top: 40%;
+  left: 45%;
+}
+
+/* text */
+.text-primary {
+  color: var(--primary-500) !important;
+}
+
+/* button */
+.btn {
+  border-radius: var(--border-radius);
+}
+
+.btn-primary {
+  color: white;
+  background: var(--primary-800);
+  border: none;
+}
+
+.btn-primary:hover,
+.btn-primary:active,
+.btn:invalid,
+.btn-primary:focus {
+  color: var(--primary-900);
+  background: var(--primary-800) !important;
+  border: none;
+}
+
+/* Active state styles */
+.button-active {
+  background-color: var(--primary-800); /* Green */
+  color: white;
+  /* border-radius: 15px; */
+}
+
+/* Inactive state styles */
+.button-inactive {
+  border: 1px solid var(--primary-500) !important; /* Green */
+  color: var(--primary-500);
+  background-color:grey;
+  /* border-radius: 15px; */
+}
+
+/* Table  */
+.table-header-custom th {
+  background-color: var(--primary-600);
+  color: #fff;
+}
+
+.table-body-custom td {
+  background-color: var(--primary-200);
+}
+
+
+.table-body-odd td{
+  background-color: var(--primary-200); /* Change this to the desired color for odd rows in the body */
+}
+
+.table-body-even td{
+  background-color: var(--primary-300); /* Change this to the desired color for even rows in the body */
+}
+
+.nav-item {
+  color: var(--primary-100) !important;
+  /* background-color: var(--primary-100); */
+}
+
+.nav-item:hover {
+  color: var(--primary-100) !important;
+  background-color: var(--primary-700);
+  cursor: pointer;
+}
+
+.fa-solid {
+  color: inherit;
+}
+
+.fa-solid:hover {
+  color: inherit;
+}
+
+.nav-link,
+.nav-link:hover {
+  color: inherit;
+}
+
+.sideBarActive {
+  background-color: var(--primary-500) !important;
+  color: var(--primary-100) !important;
+}
+
+.sideBarBg {
+  background-color: var(--primary-600) !important;
+  position: fixed;
+}
+
+.text-primary {
+  color: var(--primary-800);
+}
+
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/*Required*/
+.required::after {
+  content: ' *';
+  color: red;
+  font-size: 20px;
+}
+
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

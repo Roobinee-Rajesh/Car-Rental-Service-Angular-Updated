@@ -1,0 +1,102 @@
+<section class="vh-100">
+  <div class="container py-5 h-100">
+    <div class="row d-flex align-items-center justify-content-center h-100">
+      <!-- Image column -->
+      <div class="col-6">
+        <div class="text-center">
+          <img
+            src="https://mycollegebuddy.com/images/login_page_img.png"
+            class="img-fluid"
+            alt="Login Image"
+          />
+        </div>
+      </div>
+
+      <!-- Form column -->
+      <div class="col-6">
+        <h2 class="display-4 text-primary">Login</h2>
+
+        <form #loginForm="ngForm" (ngSubmit)="login(loginForm)">
+          <!-- Username input -->
+          <div class="form-outline mb-3">
+            <label class="form-label required" for="username">Username</label>
+            <input
+              type="text"
+              class="form-control"
+              name="username"
+              [(ngModel)]="username"
+              #modelUserName="ngModel"
+              ngModel
+              required
+              minlength="3"
+              maxlength="9"
+            />
+            <!-- Error messages -->
+            <p
+              *ngIf="modelUserName.errors?.['required'] && modelUserName.touched"
+              class="error"
+            >
+              Username is required.
+            </p>
+            <p
+              *ngIf="modelUserName.errors?.['minlength'] && modelUserName.touched"
+              class="error"
+            >
+              Username must be at least 3 characters long.
+            </p>
+          </div>
+
+          <!-- Password input -->
+          <div class="form-outline mb-3">
+            <label class="form-label required" for="password">Password</label>
+            <input
+              type="password"
+              class="form-control"
+              name="password"
+              [(ngModel)]="password"
+              #modelPassword="ngModel"
+              ngModel
+              required
+              minlength="4"
+              maxlength="16"
+            />
+            <!-- Error messages -->
+            <p
+              *ngIf="modelPassword.errors?.['required'] && modelPassword.touched"
+              class="error"
+            >
+              Password is required.
+            </p>
+            <p
+              *ngIf="modelPassword.errors?.['minlength'] && modelPassword.touched"
+              class="error"
+            >
+              Password must be at least 4 characters long.
+            </p>
+          </div>
+
+          <p
+            class="error"
+            [ngClass]="error.length > 0 ? 'visible' : 'invisible'"
+          >
+            {{ error }}
+          </p>
+
+          <div class="d-flex align-items-center mb-4">
+            <span>Not registered?</span>
+            <a
+              routerLink="/register"
+              class="text-primary text-decoration-none px-2"
+              >Register here</a
+            >
+          </div>
+
+          <!-- Submit button -->
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary">Login</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>

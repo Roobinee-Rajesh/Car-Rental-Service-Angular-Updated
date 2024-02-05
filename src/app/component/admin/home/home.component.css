@@ -1,0 +1,17 @@
+.chart-container {
+    /* position: relative; */
+    width: 75%;/* Prevent content overflow */
+    height: 50%;
+  }
+
+  #myChart {
+    width: 100%; /* Set the width as needed */
+    height: 400px; /* Set the height as needed */
+    display: block;
+    margin: 0 auto; /* Center the chart horizontally if needed */
+  }
+
+  .static-pie-chart {
+    pointer-events: none;
+  }
+  

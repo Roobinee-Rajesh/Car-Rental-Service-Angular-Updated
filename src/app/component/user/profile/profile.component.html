@@ -1,0 +1,245 @@
+<section class="vh-100 pt-2">
+  <div class="container h-100">
+    <div class="row d-flex justify-content-center h-100">
+      <!-- Left Side: Profile Form -->
+      <div class="col-lg-5">
+        <!-- profile form -->
+        <div class="d-flex justify-content-between">
+          <h3 class="text-center fw-bold mb-5 mx-1 mx-md-4 mt-4">PROFILE</h3>
+          <div class="pt-3 pe-4">
+            <button
+              type="button"
+              class="btn btn-primary h-50 text-white h-50"
+              (click)="toggleEditMode()"
+              style="height: 25"
+            >
+              <b>{{ isEditMode ? "Cancel Edit" : "Edit" }}</b>
+            </button>
+          </div>
+        </div>
+
+        <form class="mx-1 mx-md-4" (ngSubmit)="onSubmit(Form)" #Form="ngForm">
+          <div typr="hidden" name="id" [(ngModel)]="id"></div>
+          <div class="d-flex flex-row align-items-center mb-4">
+            <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+            <div class="form-outline flex-fill mb-0">
+              <input
+                type="text"
+                id="username"
+                name="userName"
+                class="form-control"
+                placeholder="User Name"
+                [(ngModel)]="userName"
+                ngModel
+                required
+                minlength="3"
+                pattern="^[A-Za-z\s'-]+$"
+                #modelUserName="ngModel"
+                [disabled]="!isEditMode"
+                [ngClass]="
+                  modelUserName.invalid && modelUserName.dirty
+                    ? 'is-invalid'
+                    : ''
+                "
+              />
+              <p
+                class="error"
+                *ngIf="modelUserName.invalid && modelUserName.dirty"
+              >
+                Please enter a valid user name
+              </p>
+            </div>
+          </div>
+
+          <div class="d-flex flex-row align-items-center mb-4">
+            <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+            <div class="form-outline flex-fill mb-0">
+              <input
+                type="text"
+                id="name"
+                name="name"
+                class="form-control"
+                placeholder="Name"
+                [(ngModel)]="name"
+                [disabled]="!isEditMode"
+                ngModel
+                required
+                minlength="3"
+                pattern="^[A-Za-z\s'-]+$"
+                #modelName="ngModel"
+                [ngClass]="
+                  modelName.invalid && modelName.dirty ? 'is-invalid' : ''
+                "
+              />
+              <p class="error" *ngIf="modelName.invalid && modelName.dirty">
+                Please enter a valid name
+              </p>
+            </div>
+          </div>
+
+          <div class="d-flex flex-row align-items-center mb-4">
+            <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
+            <div class="form-outline flex-fill mb-0">
+              <input
+                type="email"
+                id="email"
+                name="email"
+                class="form-control"
+                placeholder="Email"
+                [(ngModel)]="email"
+                [disabled]="!isEditMode"
+                ngModel
+                required
+                email
+                pattern="^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$"
+                #modelEmail="ngModel"
+                [ngClass]="
+                  modelEmail.invalid && modelEmail.dirty ? 'is-invalid' : ''
+                "
+              />
+              <p *ngIf="modelEmail.invalid && modelEmail.dirty" class="error">
+                Please enter a valid email
+              </p>
+            </div>
+          </div>
+
+          <div class="d-flex flex-row align-items-center mb-4">
+            <i class="fas fa-phone fa-lg me-3 fa-fw"></i>
+            <div class="form-outline flex-fill mb-0">
+              <input
+                type="tel"
+                id="phoneNumber"
+                name="phoneNumber"
+                class="form-control"
+                placeholder="Phone Number"
+                [(ngModel)]="phoneNumber"
+                [disabled]="!isEditMode"
+                ngModel
+                required
+                pattern="^(?:(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|0)([6789]\d{9}))$"
+                #modelPhoneNumber="ngModel"
+                [ngClass]="
+                  modelPhoneNumber.invalid && modelPhoneNumber.dirty
+                    ? 'is-invalid'
+                    : ''
+                "
+              />
+              <p
+                *ngIf="modelPhoneNumber.invalid && modelPhoneNumber.dirty"
+                class="error"
+              >
+                Please enter a valid phone number
+              </p>
+            </div>
+          </div>
+
+          <div class="d-flex flex-row align-items-center mb-4">
+            <i class="fas fa-address-card fa-lg me-3 fa-fw"></i>
+            <div class="form-outline flex-fill mb-0">
+              <input
+                type="text"
+                id="address"
+                name="address"
+                class="form-control"
+                placeholder="Address"
+                [(ngModel)]="address"
+                ngModel
+                required
+                minlength="20"
+                pattern="^[A-Za-z0-9\s,.'-]+$"
+                #modelAddress="ngModel"
+                [disabled]="!isEditMode"
+                [ngClass]="
+                  modelAddress.invalid && modelAddress.dirty ? 'is-invalid' : ''
+                "
+              />
+              <p
+                *ngIf="modelAddress.invalid && modelAddress.dirty"
+                class="error"
+              >
+                Please enter a valid address
+              </p>
+            </div>
+          </div>
+          <input type="hidden" name="password" [(ngModel)]="password" />
+          <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+            <button
+              type="submit"
+              class="btn btn-primary btn-lg"
+              [disabled]="!isEditMode"
+              [ngClass]="{
+                'button-active': !Form.invalid,
+                'button-inactive': Form.invalid
+              }"
+            >
+              Update
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Right Side: Past Reservation History -->
+
+      <div class="col-lg-7">
+        <!-- Card-3: Past Reservation History -->
+        <div>
+          <h3 class="fw-bold md-4 mt-4">PAST HISTORY</h3>
+          <div class="row pt-5">
+            <table class="table table-striped mx-2" id="receiptArea">
+              <!-- ... Header ... -->
+              <thead>
+                <tr class="table-header-custom">
+                  <th scope="col">RESERVATION DATE</th>
+                  <th scope="col">START DATE</th>
+                  <th scope="col">END DATE</th>
+                  <th scope="col">VEHICLE BOOKED</th>
+                  <th scope="col">RENT CHARGE</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="let p of paginatedReservations; let i = index"
+                  [class.table-body-odd]="i % 2 !== 0"
+                  [class.table-body-even]="i % 2 === 0"
+                >
+                  <td>{{ p.reservation_date }}</td>
+                  <td>{{ p.start_date }}</td>
+                  <td>{{ p.end_date }}</td>
+                  <td>{{ p.model_name }}</td>
+                  <td>{{ p.total_price }}</td>
+                  <!-- <td (click)="downloadPdf()">download</td> -->
+
+                </tr>
+              </tbody>
+            </table>
+            <div class="d-flex justify-content-center">
+              <div *ngIf="pastReservations.length === 0" class="w-100 h-75">
+                <ng-lottie [options]="empty"></ng-lottie>
+              </div>
+            </div>
+          </div>
+        </div>
+  <!-- Pagination controls -->
+  <div class="d-flex justify-content-center">
+    <ul class="pagination">
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <a class="page-link" (click)="changePage(-1)" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      <li class="page-item" *ngFor="let page of getPageNumbers()"  [class.active]="currentPage === page">
+        <a class="page-link" (click)="goToPage(page)">{{ page }}</a>
+      </li>
+      <li class="page-item" [class.disabled]="currentPage === getTotalPages()">
+        <a class="page-link" (click)="changePage(1)" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+        <!-- End Card -->
+      </div>
+    </div>
+  </div>
+
+</section>

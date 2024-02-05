@@ -1,0 +1,151 @@
+.card-style {
+  /* margin-bottom: 50px; */
+  border-radius: 20px;
+  color: var(--primary-800) !important;
+}
+/* .card-style:hover {
+    transform: scale(1.1);
+  } */
+
+.card {
+  /* border-radius: 30px; */
+  background-color: var(--primary-600) !important;
+}
+
+.card-car {
+  background-color: var(--primary-200) !important;
+  border-radius: 20px;
+}
+
+.fa-solid {
+  color: white !important;
+}
+
+.text-box {
+  border-color: var(--primary-600) !important;
+  background-color: var(--primary-600) !important;
+  color: rgb(247, 245, 245);
+}
+
+/* Active state styles */
+/* .button-active{
+  background-color: var(--primary-800); 
+  color: white;
+} */
+
+/* Inactive state styles */
+/* .button-inactive {
+  background-color: var(--primary-800);
+  color: #666;
+} */
+
+.card-container {
+  border: 1px solid #ddd; /* Border color */
+  border-radius: 10px; /* Border radius */
+  overflow: hidden; /* Hide overflow content */
+  transition: transform 0.3s ease-in-out; /* Add transition effect */
+}
+
+.card-container:hover {
+  transform: scale(1.05); /* Scale up on hover */
+}
+
+.card-image {
+  object-fit: cover; /* Ensure the image covers the container */
+  height: 200px; /* Set a fixed height for the image */
+}
+
+.card-body {
+  padding: 15px;
+}
+
+.card-title {
+  font-size: 1.5rem; /* Adjust title font size */
+  margin-bottom: 10px;
+}
+
+.card-text {
+  color: #555; /* Set text color */
+  margin-bottom: 8px;
+}
+
+.card-price {
+  font-size: 1.2rem; /* Adjust price font size */
+  font-weight: bold;
+}
+
+.button-book {
+  background-color: #007bff; /* Blue background color */
+  color: #fff; /* White text color */
+}
+
+.scroll-container {
+  overflow: hidden;
+  overflow-x: auto;
+  white-space: nowrap;
+  position: relative;
+}
+
+.scroll-button {
+  transform: translateY(-50%);
+  font-size: 1.5rem;
+  background: var(--primary-600);
+  border: none;
+  cursor: pointer;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+}
+
+.left {
+  left: 0;
+}
+
+.right {
+  right: 0;
+}
+
+/* Filter */
+.filter-container {
+  position: relative;
+}
+
+
+
+.range-container {
+  position: relative;
+}
+
+.range-label {
+  position: absolute;
+  top: -35px; /* Adjust this value based on your design */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #fff;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  white-space: nowrap;
+  display: none; /* Initially hide the label */
+}
+
+.range-container:hover .range-label {
+  display: block; /* Show the label on hover */
+}
+
+/* Additional styles for the label */
+.range-label::before {
+  /* content: ''; Create an arrow-like shape */
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 8px;
+  border-style: solid;
+  border-color: transparent transparent #fff transparent;
+}
+
+.filter{
+  color: grey;
+}
+

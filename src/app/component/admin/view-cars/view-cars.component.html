@@ -1,0 +1,448 @@
+<section class="pt-5">
+  <div class="row d-flex align-items-center h-100">
+    <div class="col-12">
+      <div class="d-flex align-items-center mb-5 container">
+        <div class="col-7"><h3 class="mb-0 fw-bold ls-tight">Cars</h3></div>
+        <div class="col-3">
+          <input
+            class="form-control me-2 rounded"
+            type="search"
+            placeholder="Search By Name"
+            aria-label="Search"
+            [(ngModel)]="search"
+            (ngModelChange)="filterArray()"
+          />
+        </div>
+
+        <!-- Add button -->
+        <div
+          class="d-flex justify-content-end col-2"
+          style="color: white"
+          data-bs-toggle="modal"
+          data-bs-target="#edit"
+          (click)="addReset()"
+        >
+          <button type="submit" class="btn btn-primary btn-block w-50">
+            Add
+            <i class="fa-solid fa-plus"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="d-flex">
+        <div class="ps-5" (change)="carFilter()" >
+          <div class="d-flex justify-content-between"><h4 class="mb-2"><b>Filter</b></h4><p (click)="clearForm()">clear</p></div>
+          
+          <div class="card mb-3" style="width: 18rem">
+            <div class="card-body">
+              <h4>Manufacturer</h4>
+  
+              <div  *ngFor="let manufacturer of manufacturers">
+                <input
+                  class="form-check-input position-static"
+                  type="checkbox"
+                  id="blankCheckbox"
+                  value="manifacturer"
+                  aria-label="..."
+                  (change)="onChangeManufacturer($event,manufacturer)"
+                  [checked]="checkedListManufacturer.includes(manufacturer)"
+
+                />
+                {{manufacturer}}
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="width: 18rem">
+            <div class="card-body">
+              <h4>Seater</h4>
+              <div  *ngFor="let seat of seats">
+                <input
+                  class="form-check-input position-static"
+                  type="checkbox"
+                  id="blankCheckbox"
+                  value="manifacturer"
+                  aria-label="..."
+                  (change)="onChangeSeat($event,seat)"
+                  [checked]="checkedListSeats.includes(seat)"
+
+                />
+                {{seat}}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        
+        
+
+        <!-- List of cars -->
+        <div class="row justify-content-center">
+          <div
+            class="col-5 d-flex flex-wrap justify-content-center align-items-start"
+            *ngFor="
+              let c of cars.slice(
+                (currentPage - 1) * itemsPerPage,
+                currentPage * itemsPerPage
+              )
+            "
+          >
+            <div class="card me-3 mb-3">
+              <div class="row no-gutters">
+                <div class="col-5 px-0">
+                  <img
+                    class="card-img"
+                    src="{{
+                      'http://localhost:8080/api/downloadFile/downloadImage/' +
+                        c.id
+                    }}"
+                    alt="{{ c.model }} Card"
+                    style="object-fit: cover; height: 100%; width: 100%"
+                  />
+                </div>
+                <div class="col-7 px-0 no-gutters">
+                  <div class="card-body">
+                    <p class="lead fw-normal mb-2">{{ c.manufacturer }}</p>
+                    <p>
+                      <span class="text-muted">Model: </span>{{ c.model }}
+                      <br /><span class="text-muted">Seats: </span>{{ c.seats
+                      }}<br /><span class="text-muted"
+                        >Year of manufacturing: </span
+                      >{{ c.year }}<br />
+                      <span class="fw-bold">₹ {{ c.rental_pricing }}</span>
+                      <span class="fw-lighter">/day</span>
+                    </p>
+                    <div class="d-flex justify-content-around align-items-end">
+                      <button
+                        type="submit"
+                        class="btn btn-primary btn-block mb-4 me-2 w-100 h-50 custom-btn"
+                        style="
+                          background-color: var(--primary-800);
+                          color: white;
+                        "
+                        data-bs-toggle="modal"
+                        data-bs-target="#edit"
+                        (click)="editCar(c)"
+                      >
+                        <i class="fa-solid fa-pen-to-square"></i>
+                      </button>
+                      <button
+                        type="submit"
+                        class="btn btn-danger btn-block mb-4 w-100 h-50 custom-btn"
+                        data-bs-toggle="modal"
+                        data-bs-target="#confirmationModal"
+                      >
+                        <i class="fa-solid fa-trash"></i>
+                      </button>
+                    </div>
+                    <!-- Modal for canceling booking -->
+                    <app-confirmation-modal
+                      [title]="'Confirmation'"
+                      (confirm)="deleteCar(c.id)"
+                      (cancel)="onCancelDelete()"
+                    >
+                      Are you sure you want to delete the car?
+                    </app-confirmation-modal>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Pagination controls -->
+    <ul class="pagination justify-content-center mt-3">
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <a
+          class="page-link"
+          (click)="currentPage = currentPage - 1"
+          aria-label="Previous"
+        >
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      <li
+        class="page-item text-danger"
+        *ngFor="let page of getPageNumbers()"
+        [class.active]="currentPage === page"
+      >
+        <a class="page-link" (click)="currentPage = page">{{ page }}</a>
+      </li>
+      <li class="page-item" [class.disabled]="currentPage === getLastPage()">
+        <a
+          class="page-link"
+          (click)="currentPage = currentPage + 1"
+          aria-label="Next"
+        >
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- Form Model -->
+<div
+  class="modal fade"
+  id="edit"
+  tabindex="-1"
+  aria-labelledby="editLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editLabel">Car Details</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <!-- Form -->
+        <form class="mx-1 mx-md-4" (ngSubmit)="onSubmit(Form)" #Form="ngForm">
+          <input type="hidden" [ngModel]="editCarObject.id" ngModel name="id" />
+          <div class="d-flex flex-row align-items-center mb-4 required">
+            <i class="fas fa-calendar-alt fa-lg me-3 fa-fw"></i>
+            <div class="form-outline flex-fill mb-0">
+              <input
+                type="number"
+                id="maintenance_schedule"
+                name="maintenance_schedule"
+                class="form-control"
+                placeholder="Maintenance Schedule (1-10)"
+                [ngModel]="editCarObject.maintenance_schedule"
+                ngModel
+                required
+                min="1"
+                max="10"
+                #modelMaintenanceSchedule="ngModel"
+                [ngClass]="
+                  modelMaintenanceSchedule.invalid &&
+                  modelMaintenanceSchedule.dirty
+                    ? 'is-invalid'
+                    : ''
+                "
+              />
+              <p
+                class="error"
+                *ngIf="
+                  modelMaintenanceSchedule.invalid &&
+                  modelMaintenanceSchedule.dirty
+                "
+              >
+                Please enter a valid maintenance schedule between 1 and 10
+              </p>
+            </div>
+          </div>
+
+          <div class="d-flex flex-row align-items-center mb-4 required">
+            <i class="fas fa-industry fa-lg me-3 fa-fw"></i>
+            <div class="form-outline flex-fill mb-0">
+              <input
+                type="text"
+                id="manufacturer"
+                name="manufacturer"
+                class="form-control"
+                placeholder="Manufacturer"
+                [(ngModel)]="editCarObject.manufacturer"
+                ngModel
+                required
+                #modelManufacturer="ngModel"
+                [ngClass]="
+                  modelManufacturer.invalid && modelManufacturer.dirty
+                    ? 'is-invalid'
+                    : ''
+                "
+              />
+              <p
+                class="error"
+                *ngIf="modelManufacturer.invalid && modelManufacturer.dirty"
+              >
+                Please enter a valid manufacturer
+              </p>
+            </div>
+          </div>
+
+          <div class="d-flex flex-row align-items-center mb-4 required">
+            <i class="fas fa-car fa-lg me-3 fa-fw"></i>
+            <div class="form-outline flex-fill mb-0">
+              <input
+                type="text"
+                id="model"
+                name="model"
+                class="form-control"
+                placeholder="Car Model"
+                ngModel
+                required
+                #modelCarModel="ngModel"
+                [(ngModel)]="editCarObject.model"
+                [ngClass]="
+                  modelCarModel.invalid && modelCarModel.dirty
+                    ? 'is-invalid'
+                    : ''
+                "
+              />
+              <p
+                class="error"
+                *ngIf="modelCarModel.invalid && modelCarModel.dirty"
+              >
+                Please enter a valid car model
+              </p>
+            </div>
+          </div>
+
+          <div class="d-flex flex-row align-items-center mb-4 required">
+            <!-- <i class="fas fa-dollar-sign fa-lg me-3 fa-fw"></i> -->
+            <i class="fas fa-solid fa-indian-rupee-sign fa-lg me-3 fa-fw"></i>
+            <div class="form-outline flex-fill mb-0">
+              <input
+                type="number"
+                id="rental_pricing"
+                name="rental_pricing"
+                class="form-control"
+                placeholder="Rent Price"
+                ngModel
+                required
+                #modelRentPrice="ngModel"
+                [(ngModel)]="editCarObject.rental_pricing"
+                [ngClass]="
+                  modelRentPrice.invalid && modelRentPrice.dirty
+                    ? 'is-invalid'
+                    : ''
+                "
+              />
+              <p
+                class="error"
+                *ngIf="modelRentPrice.invalid && modelRentPrice.dirty"
+              >
+                Please enter a valid rent price
+              </p>
+            </div>
+          </div>
+
+          <div class="d-flex flex-row align-items-center mb-4 required">
+            <i class="fas fa-chair fa-lg me-3 fa-fw"></i>
+            <div class="form-outline flex-fill mb-0">
+              <input
+                type="number"
+                id="seats"
+                name="seats"
+                class="form-control"
+                placeholder="Number of Seats"
+                ngModel
+                required
+                #modelSeats="ngModel"
+                [(ngModel)]="editCarObject.seats"
+                [ngClass]="
+                  modelSeats.invalid && modelSeats.dirty ? 'is-invalid' : ''
+                "
+              />
+              <p class="error" *ngIf="modelSeats.invalid && modelSeats.dirty">
+                Please enter a valid number of seats
+              </p>
+            </div>
+          </div>
+
+          <div class="d-flex flex-row align-items-center mb-4 required">
+            <i class="fas fa-calendar fa-lg me-3 fa-fw"></i>
+            <div class="form-outline flex-fill mb-0">
+              <input
+                type="number"
+                id="year"
+                name="year"
+                class="form-control"
+                placeholder="Year"
+                ngModel
+                required
+                #modelYear="ngModel"
+                [(ngModel)]="editCarObject.year"
+                [ngClass]="
+                  modelYear.invalid && modelYear.dirty ? 'is-invalid' : ''
+                "
+              />
+              <p class="error" *ngIf="modelYear.invalid && modelYear.dirty">
+                Please enter a valid year
+              </p>
+            </div>
+          </div>
+
+          <div class="d-flex flex-row align-items-center mb-4 required">
+            <i class="fas fa-user-friends fa-lg me-3 fa-fw"></i>
+            <div class="form-outline flex-fill mb-0">
+              <select
+                id="maintenance_staff_id"
+                name="maintenance_staff_id"
+                class="form-select"
+                required
+                #modelStaff="ngModel"
+                [(ngModel)]="maintenance_staff_id"
+                [ngClass]="{
+                  'is-invalid': modelStaff.invalid && modelStaff.dirty
+                }"
+              >
+                <option value="0" disabled selected>Select Staff</option>
+                <option
+                  *ngFor="let staffOption of staffOptions"
+                  [value]="staffOption.id"
+                >
+                  {{ staffOption.username }}
+                </option>
+              </select>
+              <p
+                class="error"
+                *ngIf="
+                  modelStaff.invalid && (modelStaff.dirty || modelStaff.touched)
+                "
+              >
+                Please select a valid staff option
+              </p>
+            </div>
+          </div>
+
+          <div class="form-outline mb-3" *ngIf="editCarObject.id === undefined">
+            <label class="form-label" for="username">Choose Image</label>
+            <input
+              type="file"
+              class="input-file required"
+              id="photo"
+              name="photo"
+              #modelFile="ngModel"
+              [(ngModel)]="editCarObject.photo"
+              ngModel
+              (change)="onFileChange($event)"
+              [required]="editCarObject.id === 0"
+              accept=".jpg, .jpeg, .png"
+            />
+            <div
+              *ngIf="
+                modelFile.invalid && (modelFile.dirty || modelFile.touched)
+              "
+              class="error"
+            >
+              Please choose a file.
+            </div>
+          </div>
+
+          <div>
+            <input type="hidden" [(ngModel)]="editCarObject.photoFile" />
+          </div>
+
+          <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="Form.invalid"
+              data-bs-dismiss="modal"
+            >
+              {{ buttonName }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

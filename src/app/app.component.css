@@ -1,0 +1,18 @@
+  .logo{
+   height: 50px;
+   width: 100;
+
+  }
+  .green-background {
+    background-color: green;
+}
+
+.custom-dropdown {
+  width: 250px; /* Set your desired width */
+  max-height: 300px; /* Set your desired max height */
+  overflow-y: auto; /* Add scroll bar if content exceeds max height */
+}
+
+.custom-dropdown-item {
+  text-align: justify;
+}

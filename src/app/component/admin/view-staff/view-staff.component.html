@@ -1,0 +1,540 @@
+<section class="h-100 container">
+  <div class="row d-flex justify-content-center pt-5 h-100 me-1">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="col-6">
+          <h3 class="mb-0 fw-bold ls-tight">Personnel in work</h3>
+        </div>
+        <div>
+          <input
+            class="form-control me-2 rounded"
+            type="search"
+            placeholder="Search By Name"
+            aria-label="Search"
+            [(ngModel)]="search"
+            (ngModelChange)="filterArray()"
+          />
+        </div>
+
+        <!-- Add button -->
+        <div
+          class="d-flex justify-content-end col-md-3"
+          style="color: white"
+          data-bs-toggle="modal"
+          data-bs-target="#staffModal"
+        >
+          <button
+            type="submit"
+            class="btn btn-primary btn-block w-50"
+            (click)="fromReset()"
+          >
+            Add
+            <i class="fa-solid fa-plus"></i>
+          </button>
+        </div>
+      </div>
+
+      <table class="table align-middle mb-0 bg-white">
+        <thead class="table-header-custom">
+          <tr class="bg-primary">
+            <th class="" (click)="sort()">
+              Name &nbsp;&nbsp;&nbsp;<i class="fa-solid fa-sort"></i>
+            </th>
+            <th>Email</th>
+            <th>Address</th>
+            <th>Phone Number</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody
+          class="table-body-custom"
+          *ngFor="
+            let s of staff.slice(
+              (currentPage - 1) * itemsPerPage,
+              currentPage * itemsPerPage
+            )
+          "
+        >
+          <tr>
+            <td>{{ s.username }}</td>
+            <td>{{ s.email }}</td>
+            <td>{{ s.address }}</td>
+            <td>{{ s.phone_number }}</td>
+
+            <td>
+              <div
+                class="btn-group d-flex justify-content-between"
+                role="group"
+                aria-label="Actions"
+              >
+                <button
+                  type="button"
+                  class="btn btn-primary custom-btn"
+                  style="background-color: #3f6212; color: white"
+                  data-bs-toggle="modal"
+                  data-bs-target="#staffEditModal"
+                  (click)="editStaff(s)"
+                >
+                  <i class="fa-solid fa-pen-to-square"></i></button
+                >&nbsp;
+                <button
+                  type="button"
+                  class="btn btn-danger custom-btn"
+                  data-bs-toggle="modal"
+                  data-bs-target="#confirmationModal"
+                  (click)="setDeleteId(s.id)"
+                >
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+                <!-- Modal for canceling booking -->
+                <app-confirmation-modal
+                  [title]="'Confirmation'"
+                  (confirm)="deleteStaffById(deleteStaffId)"
+                  (cancel)="onCancelDelete()"
+                >
+                  Are you sure you want to delete the staff?
+                </app-confirmation-modal>
+              </div>
+            </td>
+          </tr>
+          <!-- <p>{{s.id}}</p> -->
+        </tbody>
+      </table>
+      <!-- Pagination controls -->
+      <ul class="pagination justify-content-center mt-3">
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <a
+            class="page-link"
+            (click)="currentPage = currentPage - 1"
+            aria-label="Previous"
+          >
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        <li
+          class="page-item text-danger"
+          *ngFor="let page of getPageNumbers()"
+          [class.active]="currentPage === page"
+        >
+          <a class="page-link" (click)="currentPage = page">{{ page }}</a>
+        </li>
+        <li class="page-item" [class.disabled]="currentPage === getLastPage()">
+          <a
+            class="page-link"
+            (click)="currentPage = currentPage + 1"
+            aria-label="Next"
+          >
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Add Modal Form -->
+
+<div
+  class="modal fade"
+  id="staffModal"
+  tabindex="-1"
+  aria-labelledby="staffModal"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Staff</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form class="mx-1 mx-md-4" (ngSubmit)="onSubmit(Form)" #Form="ngForm">
+          <input
+            type="hidden"
+            [(ngModel)]="editStaffObject.id"
+            ngModel
+            name="id"
+          />
+          <div class="d-flex flex-row align-items-center mb-4 required">
+            <i class="fas fa-user fa-lg me-2 fa-fw"></i>
+            <div class="form-outline flex-fill mb-0">
+              <input
+                type="text"
+                id="userName"
+                name="userName"
+                class="form-control"
+                placeholder="User Name"
+                ngModel
+                required
+                minlength="3"
+                pattern="^[A-Za-z\s'-]+$"
+                [(ngModel)]="editStaffObject.username"
+                #modelUserName="ngModel"
+                [ngClass]="
+                  modelUserName.invalid && modelUserName.dirty
+                    ? 'is-invalid'
+                    : ''
+                "
+              />
+              <p
+                class="error"
+                *ngIf="modelUserName.invalid && modelUserName.touched"
+              >
+                Please enter a valid name
+              </p>
+            </div>
+          </div>
+
+          <div class="d-flex flex-row align-items-center mb-4 required">
+            <i class="fas fa-user fa-lg me-2 fa-fw"></i>
+            <div class="form-outline flex-fill mb-0">
+              <input
+                type="text"
+                id="name"
+                name="name"
+                class="form-control"
+                placeholder="Name"
+                ngModel
+                required
+                minlength="3"
+                pattern="^[A-Za-z\s'-]+$"
+                [(ngModel)]="editStaffObject.name"
+                #modelName="ngModel"
+                [ngClass]="
+                  modelName.invalid && modelName.dirty ? 'is-invalid' : ''
+                "
+              />
+              <p class="error" *ngIf="modelName.invalid && modelName.dirty">
+                Please enter a valid name
+              </p>
+            </div>
+          </div>
+
+          <div class="d-flex flex-row align-items-center mb-4 required">
+            <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
+            <div class="form-outline flex-fill mb-0">
+              <input
+                type="email"
+                id="email"
+                name="email"
+                class="form-control"
+                placeholder="Email"
+                ngModel
+                required
+                email
+                [(ngModel)]="editStaffObject.email"
+                pattern="^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$"
+                #modelEmail="ngModel"
+                [ngClass]="
+                  modelEmail.invalid && modelEmail.dirty ? 'is-invalid' : ''
+                "
+              />
+              <p *ngIf="modelEmail.invalid && modelEmail.dirty" class="error">
+                Please enter a valid email
+              </p>
+            </div>
+          </div>
+
+          <div class="d-flex flex-row align-items-center mb-4 required">
+            <i class="fas fa-phone fa-lg me-3 fa-fw"></i>
+            <div class="form-outline flex-fill mb-0">
+              <input
+                type="text"
+                id="phoneNumber"
+                name="phoneNumber"
+                class="form-control"
+                placeholder="Phone Number"
+                ngModel
+                required
+                [(ngModel)]="editStaffObject.phone_number"
+                pattern="^(?:(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|0)([6789]\d{9}))$"
+                #modelPhoneNumber="ngModel"
+                [ngClass]="
+                  modelPhoneNumber.invalid && modelPhoneNumber.dirty
+                    ? 'is-invalid'
+                    : ''
+                "
+              />
+              <p
+                *ngIf="modelPhoneNumber.invalid && modelPhoneNumber.dirty"
+                class="error"
+              >
+                Please enter a valid phone number
+              </p>
+            </div>
+          </div>
+
+          <div class="d-flex flex-row align-items-center mb-4 required">
+            <i class="fas fa-address-card fa-lg me-3 fa-fw"></i>
+            <div class="form-outline flex-fill mb-0">
+              <input
+                type="text"
+                id="address"
+                name="address"
+                class="form-control"
+                placeholder="Address"
+                ngModel
+                required
+                minlength="20"
+                pattern="^[A-Za-z0-9\s,.'-]+$"
+                [(ngModel)]="editStaffObject.address"
+                #modelAddress="ngModel"
+                [ngClass]="
+                  modelAddress.invalid && modelAddress.dirty ? 'is-invalid' : ''
+                "
+              />
+              <p
+                *ngIf="modelAddress.invalid && modelAddress.dirty"
+                class="error"
+              >
+                Please enter a valid address
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="d-flex flex-row align-items-center mb-4 required"
+            *ngIf="editStaffObject.id === 0"
+          >
+            <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
+            <div class="form-outline flex-fill mb-0">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                class="form-control"
+                placeholder="Password"
+                ngModel
+                [(ngModel)]="editStaffObject.password"
+                required
+                password
+                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+                #modelPassword="ngModel"
+                [ngClass]="
+                  modelPassword.invalid && modelPassword.dirty
+                    ? 'is-invalid'
+                    : ''
+                "
+              />
+              <p
+                class="error"
+                *ngIf="modelPassword.invalid && modelPassword.dirty"
+              >
+                Please enter a valid password
+              </p>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="Form.invalid"
+              data-bs-dismiss="modal"
+            >
+              Add
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Form Modal -->
+
+<div
+  class="modal fade"
+  id="staffEditModal"
+  tabindex="-1"
+  aria-labelledby="staffModal"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Staff</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form
+          class="mx-1 mx-md-4"
+          (ngSubmit)="onSubmit(EditForm)"
+          #EditForm="ngForm"
+        >
+          <input
+            type="hidden"
+            [(ngModel)]="editStaffObject.id"
+            ngModel
+            name="id"
+          />
+          <div class="d-flex flex-row align-items-center mb-4 required">
+            <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+            <div class="form-outline flex-fill mb-0">
+              <input
+                type="text"
+                id="userName"
+                name="userName"
+                class="form-control"
+                placeholder="User Name"
+                ngModel
+                required
+                minlength="3"
+                pattern="^[A-Za-z\s'-]+$"
+                #modelUserName="ngModel"
+                [(ngModel)]="editStaffObject.username"
+                [ngClass]="
+                  modelUserName.invalid && modelUserName.dirty
+                    ? 'is-invalid'
+                    : ''
+                "
+              />
+              <p
+                class="error"
+                *ngIf="modelUserName.invalid && modelUserName.dirty"
+              >
+                Please enter a valid user name
+              </p>
+            </div>
+          </div>
+
+          <div class="d-flex flex-row align-items-center mb-4 required">
+            <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+            <div class="form-outline flex-fill mb-0">
+              <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Name"
+                class="form-control"
+                plac
+                ngModel
+                required
+                minlength="3"
+                pattern="^[A-Za-z\s'-]+$"
+                [(ngModel)]="editStaffObject.name"
+                #modelName="ngModel"
+                [ngClass]="
+                  modelName.invalid && modelName.dirty ? 'is-invalid' : ''
+                "
+              />
+              <p class="error" *ngIf="modelName.invalid && modelName.dirty">
+                Please enter a valid name
+              </p>
+            </div>
+          </div>
+
+          <div class="d-flex flex-row align-items-center mb-4 required">
+            <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
+            <div class="form-outline flex-fill mb-0">
+              <input
+                type="email"
+                id="email"
+                name="email"
+                class="form-control"
+                placeholder="Email"
+                ngModel
+                required
+                email
+                [(ngModel)]="editStaffObject.email"
+                pattern="^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$"
+                #modelEmail="ngModel"
+                [ngClass]="
+                  modelEmail.invalid && modelEmail.dirty ? 'is-invalid' : ''
+                "
+              />
+              <p *ngIf="modelEmail.invalid && modelEmail.dirty" class="error">
+                Please enter a valid email
+              </p>
+            </div>
+          </div>
+
+          <div class="d-flex flex-row align-items-center mb-4 required">
+            <i class="fas fa-phone fa-lg me-3 fa-fw"></i>
+            <div class="form-outline flex-fill mb-0">
+              <input
+                type="text"
+                id="phoneNumber"
+                name="phone_number"
+                class="form-control"
+                placeholder="Phone Number"
+                ngModel
+                required
+                [(ngModel)]="editStaffObject.phone_number"
+                pattern="^(?:(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|0)([6789]\d{9}))$"
+                #modelPhoneNumber="ngModel"
+                [ngClass]="
+                  modelPhoneNumber.invalid && modelPhoneNumber.dirty
+                    ? 'is-invalid'
+                    : ''
+                "
+              />
+              <p
+                *ngIf="modelPhoneNumber.invalid && modelPhoneNumber.dirty"
+                class="error"
+              >
+                Please enter a valid phone number
+              </p>
+            </div>
+          </div>
+
+          <div class="d-flex flex-row align-items-center mb-4 required">
+            <i class="fas fa-address-card fa-lg me-3 fa-fw"></i>
+            <div class="form-outline flex-fill mb-0">
+              <input
+                type="text"
+                id="address"
+                name="address"
+                class="form-control"
+                placeholder="Address"
+                ngModel
+                required
+                minlength="20"
+                pattern="^[A-Za-z0-9\s,.'-]+$"
+                [(ngModel)]="editStaffObject.address"
+                #modelAddress="ngModel"
+                [ngClass]="
+                  modelAddress.invalid && modelAddress.dirty ? 'is-invalid' : ''
+                "
+              />
+              <p
+                *ngIf="modelAddress.invalid && modelAddress.dirty"
+                class="error"
+              >
+                Please enter a valid address
+              </p>
+            </div>
+          </div>
+          <input
+            type="hidden"
+            [(ngModel)]="editStaffObject.password"
+            ngModel
+            name="password"
+          />
+          <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="EditForm.invalid"
+              data-bs-dismiss="modal"
+            >
+              {{button}}
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer"></div>
+    </div>
+  </div>
+</div>

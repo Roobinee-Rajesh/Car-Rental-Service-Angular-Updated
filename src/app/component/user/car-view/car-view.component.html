@@ -1,0 +1,235 @@
+<section class="h-100 h-custom">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-5">
+        <!-- <div class="col-lg-7 col-xl-6"> -->
+        <div
+          class="card border-top border-bottom border-3"
+          style="border-color: #65a30d !important"
+        >
+          <div class="card-body p-5" style="background-color: #d9f99d">
+            <p class="lead fw-bold mb-1" style="color: #3f6212">
+              Booking Preview
+            </p>
+
+            <div class="row">
+              <div class="col mb-3">
+                <p class="small text-muted mb-1">From Date</p>
+                <p>{{ startDate }}</p>
+              </div>
+              <div class="col mb-3">
+                <p class="small text-muted mb-1">To Date</p>
+                <p>{{ endDate }}</p>
+              </div>
+            </div>
+
+            <div class="mx-n5 px-5" style="background-color: #f7fee7">
+              <div class="row">
+                <div class="col-md-7 col-lg-7">
+                  <h4>{{ car.manufacturer }}</h4>
+                </div>
+                <div class="col-md-5 col-lg-5">
+                  <p>{{ car.seats }} Seater</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-7 col-lg-7">
+                  <p class="mb-0">{{ car.model }}</p>
+                </div>
+                <div class="col-md-5 col-lg-5">
+                  <p class="mb-0">{{ numberOfRentalDays }} Days</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-7 col-lg-7">
+                  <p class="mb-0">{{ car.rental_pricing }}/day</p>
+                </div>
+                <div class="col-md-5 col-lg-5">
+                  <p class="mb-0">{{ car.year }} model</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="row my-4">
+              <div class="col-md-4 offset-md-8 col-lg-3 offset-lg-9">
+                <p class="lead fw-bold mb-0" style="color: #3f6212">
+                  ₹{{ numberOfRentalDays * car.rental_pricing! }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-5">
+        <div class="card bg-primary text-white rounded-3">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h5 class="mb-0">Card details</h5>
+            </div>
+
+            <form #cardForm="ngForm" (ngSubmit)="confirmBooking()">
+              <!-- Cardholder's Name -->
+              <div class="form-outline form-white mb-4">
+                <input
+                  type="text"
+                  id="typeName"
+                  class="form-control"
+                  size="17"
+                  placeholder="Cardholder's Name"
+                  name="cardholderName"
+                  #modelCardHolderName="ngModel"
+                  [ngClass]="
+                    modelCardHolderName.invalid && modelCardHolderName.dirty
+                      ? 'is-invalid'
+                      : ''
+                  "
+                  ngModel
+                  required
+                  pattern="^[^0-9]*$"
+                />
+                <label class="form-label required" for="typeName"
+                  >Cardholder's Name</label
+                >
+                <div
+                  *ngIf="
+                    modelCardHolderName.invalid && modelCardHolderName.dirty
+                  "
+                  class="error"
+                >
+                  Cardholder's Name is required.
+                </div>
+              </div>
+
+              <!-- Card Number -->
+              <div class="form-outline form-white mb-4">
+                <input
+                  type="number"
+                  id="typeText"
+                  class="form-control"
+                  size="16"
+                  placeholder="1234 5678 9012 3457"
+                  name="cardNumber"
+                  ngModel
+                  #modelCardNumber="ngModel"
+                  [ngClass]="
+                    modelCardNumber.invalid && modelCardNumber.dirty
+                      ? 'is-invalid'
+                      : ''
+                  "
+                  required
+                  pattern="[0-9]{4}[0-9]{4}[0-9]{4}[0-9]{4}"
+                />
+                <label class="form-label required" for="typeText">Card Number</label>
+                <div
+                  *ngIf="modelCardNumber.invalid && modelCardNumber.dirty"
+                  class="error"
+                >
+                  Please enter a valid card number.
+                </div>
+              </div>
+
+              <!-- Expiration -->
+              <div class="row mb-4">
+                <div class="col-md-6">
+                  <div class="form-outline form-white">
+                    <input
+                      type="text"
+                      id="typeExp"
+                      class="form-control"
+                      placeholder="MM/YYYY"
+                      size="7"
+                      name="expiration"
+                      #modelExpiration="ngModel"
+                      [ngClass]="
+                        modelExpiration.invalid &&
+                        modelExpiration.dirty &&
+                        isExpirationInvalid(modelExpiration.value)
+                          ? 'is-invalid'
+                          : ''
+                      "
+                      ngModel
+                      required
+                      pattern="(0[1-9]|1[0-2])\/[0-9]{4}"
+                    />
+                    <label class="form-label required" for="typeExp">Expiration</label>
+                    <div
+                      *ngIf="modelExpiration.invalid && modelExpiration.dirty"
+                      class="error"
+                    >
+                      Please enter a valid date
+                    </div>
+                    <div
+                      *ngIf="isExpirationInvalid(modelExpiration.value)"
+                      class="error"
+                    >
+                      Must be a future date
+                    </div>
+                  </div>
+                </div>
+                <!-- CVV -->
+                <div class="col-md-6">
+                  <div class="form-outline form-white">
+                    <input
+                      type="password"
+                      id="typeCvv"
+                      class="form-control"
+                      placeholder="&#9679;&#9679;&#9679;"
+                      size="1"
+                      name="cvv"
+                      #modelCvv="ngModel"
+                      [ngClass]="modelCvv.invalid && modelCvv.dirty ? 'is-invalid' : ''"
+                      ngModel
+                      required
+                      inputype="numeric"
+                      pattern="[0-9]*"
+                      maxlength="3"
+                    />
+      
+                    <label class="form-label required" for="typeCvv">CVV</label>
+                    <div
+                      *ngIf="modelCvv.invalid && modelCvv.dirty"
+                      class="error"
+                    >
+                      Please enter a valid CVV.
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <button
+                type="submit"
+                [disabled]="cardForm.invalid"
+                [ngClass]="{
+                  'button-active': !cardForm.invalid,
+                  'button-inactive': cardForm.invalid
+                }"
+              >
+                <div class="d-flex justify-content-between">
+                  <span>
+                    Confirm Booking
+                    <i class="fas fa-long-arrow-alt-right ms-2"></i>
+                  </span>
+                </div>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div
+  class="container d-flex-column justify-content-center align-items-center lottie-loader"
+  *ngIf="isBookingSuccessful"
+>
+  <!-- Background overlay -->
+  <div class="overlay"></div>
+
+  <!-- Content with Lottie animation and text -->
+  <div class="content">
+    <ng-lottie [options]="confirmation"></ng-lottie>
+    <h1 class="text-center">Booked</h1>
+  </div>
+</div>

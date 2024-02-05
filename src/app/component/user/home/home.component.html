@@ -1,0 +1,279 @@
+<!-- Section: Design Block -->
+<section class="">
+  <!-- Introduction -->
+  <div class="px-4 py-5 px-md-5 text-center text-lg-start">
+    <div class="container">
+      <div class="row gx-lg-5 align-items-center">
+        <div class="col-lg-6 mb-5 mb-lg-0">
+          <h1 class="my-5 display-3 fw-bold ls-tight">
+            The best car <br />
+            <span class="text-primary">for your comfort</span>
+          </h1>
+          <p style="color: hsl(217, 10%, 50.8%); font-size: large">
+            Embark on a seamless journey with our reliable car rental services.
+            Explore in comfort with our well-maintained fleet. Book today for a
+            convenient and worry-free travel experience.
+          </p>
+        </div>
+        <!-- Form -->
+        <div class="col-lg-6 mb-5 mb-lg-0">
+          <div class="card">
+            <div class="card-body py-5 px-md-5">
+              <div class="text-center pb-4 text-box">
+                <h2 class="fw-bold mb-2 text-uppercase">RENT CAR</h2>
+                <p class="form-label fw-bold">Choose Your Comfort</p>
+              </div>
+
+              <form
+                (ngSubmit)="onFormSubmit()"
+                #Form="ngForm"
+                [formGroup]="form"
+              >
+                <!-- Pickup Date input -->
+                <div class="form-outline mb-4 text-box">
+                  <input
+                    type="Date"
+                    id="start_date"
+                    name="start_date"
+                    formControlName="start_date"
+                    class="form-control"
+                    [min]="getCurrentDate()"
+                    [(ngModel)]="defaultPickupDate"
+                    ngModel
+                    required
+                  />
+                  <label class="form-label pt-2 required" for="pickup"
+                    ><b>Pickup Date</b></label
+                  >
+                </div>
+
+                <!-- Drop Date input -->
+                <div class="form-outline mb-4 text-box">
+                  <input
+                    type="Date"
+                    id="end_date"
+                    name="end_date"
+                    formControlName="end_date"
+                    class="form-control"
+                    [min]="form.get('start_date')!.value || getCurrentDate()"
+                    ngModel
+                    required
+                  />
+                  <label class="form-label pt-2 required" for="drop"
+                    ><b>Drop Date</b></label
+                  >
+                  <div
+                    *ngIf="form.get('end_date')!.hasError('invalidDropDate')"
+                    class="error"
+                  >
+                    Drop date must be greater than pickup date.
+                  </div>
+                </div>
+
+                <!-- Submit button -->
+                <div class="d-flex justify-content-center">
+                  <button
+                    type="submit"
+                    [disabled]="form.invalid"
+                    [ngClass]="{
+                      'button-active': !form.invalid,
+                      'button-inactive': form.invalid
+                    }"
+                    [title]="form.invalid ? 'Please enter the drop date' : ''"
+                    class="w-25 h-50"
+                    style="border-radius: 30px; border: none"
+                  >
+                    Find Car
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Jumbotron -->
+</section>
+<!-- Section: Design Block -->
+
+<!-- Section: Car Search Results -->
+<section *ngIf="showResults">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center">
+      <h2 class="fw-bold mb-4 text-uppercase">Search Results</h2>
+
+      <!-- Filter Button -->
+      <div
+        class="d-flex justify-content-end ms-auto mb-4 pb-2 me-4"
+        style="color: gray"
+        data-bs-toggle="modal"
+        data-bs-target="#exampleModal"
+      >
+        <b>Filter</b
+        ><i class="fa fa-filter filter mt-1" style="color: gray"></i>
+        <div
+          *ngIf="isFiltered"
+          class="d-flex justify-content-end ms-2 mb-4 pb-2 me-4"
+          style="color: gray"
+          (click)="clearFilter()"
+        >
+          <b>Clear</b>
+        </div>
+      </div>
+
+      <!-- Scroll Buttons -->
+      <div class="d-flex justify-content-start pt-2">
+        <button class="scroll-button pe-2" (click)="scroll('left')">
+          <i class="fa-solid fa-arrow-left-long"></i>
+        </button>
+        <button class="scroll-button ms-2" (click)="scroll('right')">
+          <i class="fa-solid fa-arrow-right-long"></i>
+        </button>
+      </div>
+    </div>
+    <!-- </div> -->
+
+    <!-- Search -->
+    <div
+      class="d-flex scroll-container"
+      style="overflow-x: auto; white-space: nowrap; overflow-x: hidden"
+    >
+      <div
+        class="card col-3 m-2 h-75"
+        *ngFor="let car of searchResults"
+        style="
+          background-color: #d9f99d;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        "
+      >
+        <img
+          src="{{
+            'http://localhost:8080/api/downloadFile/downloadImage/' + car.id
+          }}"
+          class="card-img-top"
+          style="height: 200px"
+        />
+        <div class="card-body">
+          <h5 class="card-title fw-bold">{{ car.manufacturer }}</h5>
+          <p class="card-text">Model: {{ car.model }}</p>
+          <p class="card-text">Seats: {{ car.seats }}</p>
+          <p class="card-text">Year of manufacturing: {{ car.year }}</p>
+          <p class="fs-4 my-1 mb-2 fw-bold">₹ {{ car.rental_pricing }}</p>
+          <div class="d-flex align-items-center justify-content-center">
+            <button
+              type="submit"
+              [disabled]="!loggedInUser()"
+              [ngClass]="{
+                'button-active': !form.invalid && loggedInUser(),
+                'button-inactive': form.invalid || !loggedInUser()
+              }"
+              [routerLink]="['/user/car_view', car.id]"
+              [title]="!loggedInUser() ? 'Please log in to book a car' : ''"
+            >
+              Book Your Car
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Filter</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+       <!-- Rental Price Filter -->
+      <div class="modal-body">
+        <div class="modal-body">
+          <label for="rentrange" class="form-label">Maximum Rent / Day</label>
+          <div class="range-container">
+            <mat-slider
+              [min]="minPrice"
+              [max]="maxPrice"
+              [step]="1"
+              [discrete]="true"
+              [showTickMarks]="true"
+            >
+              <input matSliderStartThumb value="{{minPrice}}" [(ngModel)]="filter.rentalPricingRangeMin"/>
+              <input matSliderEndThumb value="{{maxPrice}}" [(ngModel)]="filter.rentalPricingRangeMax"/>
+            </mat-slider>
+          </div>
+
+          <!-- Rental Price Filter -->
+          <!-- <label for="rentrange" class="form-label">Maximum Rent / Day</label>
+          <div class="range-container">
+    
+            <mat-slider  [min]="0"
+            [max]="500"
+            [step]="10"
+            [discrete]="true"
+            [showTickMarks]="true"
+            >
+              <input matSliderThumb [(ngModel)]="filter.rentalPricing">
+            </mat-slider>
+          </div> -->
+          <br />
+          <!-- Based on manifacturer -->
+          <label for="manufacturer">Manufacturer:</label>
+          <select id="manufacturer" [(ngModel)]="filter.manufacturer">
+            <option value="" selected disabled>Select a Manufacturer</option>
+            <option
+              *ngFor="let manufacturer of manufacturers"
+              [value]="manufacturer"
+            >
+              {{ manufacturer }}
+            </option></select
+          ><br /><br />
+          <!-- Based on Seat -->
+          <label>Seats:</label>&nbsp;&nbsp;&nbsp;
+          <input
+            type="radio"
+            name="seat"
+            id="seat5"
+            value="5"
+            [(ngModel)]="filter.seats"
+          />
+          <label for="seat5">5</label>&nbsp;&nbsp;&nbsp;
+          <input
+            type="radio"
+            name="seat"
+            id="seat8"
+            value="8"
+            [(ngModel)]="filter.seats"
+          />
+          <label for="seat8">8</label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-dismiss="modal"
+          (click)="applyFilter()"
+        >
+          Apply Filter
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
